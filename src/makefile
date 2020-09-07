@@ -17,4 +17,4 @@ prg.out : prg.o share.o common.o aes.o
 	gcc -O3 -o $@ -c $<
 
 clean:
-	rm -f *.o *.out *.out
+	rm -f *.o *.out *.txt
