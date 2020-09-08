@@ -447,7 +447,13 @@ int encrypt_find_different(byte in[16],byte out[16],byte key[16],byte outex[16],
 	fclose(fpWrite);
 	int return_num = first_filter_difference_chain(delta_value,differential_cipher_4_error,arr_delta,
 	relationship_delta_difference_cipher,diff_delta_count,appear_4_but_not_match,no_chain,more_chain,match_four);
-	
+	fpWrite = fopen("experiment.txt", "a+");
+	printf("第一次过滤返回值：%d\n",return_num);
+	fprintf(fpWrite,"第一次过滤返回值：%d\n",return_num);
+	fclose(fpWrite);
+
+
+
 	int no_chain_flag = 0;
 	while(return_num <4){
 		no_chain_flag = 1;
@@ -460,8 +466,7 @@ int encrypt_find_different(byte in[16],byte out[16],byte key[16],byte outex[16],
 				for(int h=0;h<4;h++){
 					diff_delta_count[h] = 0;
 				}
-				bool flag = false;
-				for(;current_cipher_number<Cipher_num&&!flag;current_cipher_number++){
+				for(;current_cipher_number<Cipher_num;current_cipher_number++){
 					random_plain(in);
 					FILE *fpWrite ;
 					byte out_no_error[16];
@@ -528,16 +533,15 @@ int encrypt_find_different(byte in[16],byte out[16],byte key[16],byte outex[16],
 							
 						for(int q=0;q<4;q++){
 							error_local[different_local[q]] = 1;//将本次四个错误字节位置存起来
-							dc[differential_cipher_4_error_count].diff_local[q] = different_local[q];//将两条四个字节不同的密文的不同位置存储起来
-							differential_cipher_4_error[differential_cipher_4_error_count][q] = out_error[different_local[q]] ^
+							dc[rddc].diff_local[q] = different_local[q];//将两条四个字节不同的密文的不同位置存储起来
+							differential_cipher_4_error[rddc][q] = out_error[different_local[q]] ^
 								out_no_error[different_local[q]];//计算四个字节的差分
-							//printf("差分：%02x\n",differential_cipher_4_error[differential_cipher_4_error_count][n]);
+							//printf("差分：%02x\n",differential_cipher_4_error[rddc][n]);
 						}
 						for(int y=0;y<16;y++){//将两条只有四个字节不同的密文存储起来
-							dc[differential_cipher_4_error_count].diff_cipher[0][y] = out_error[y];
-							dc[differential_cipher_4_error_count].diff_cipher[1][y] = out_no_error[y];
+							dc[rddc].diff_cipher[0][y] = out_error[y];
+							dc[rddc].diff_cipher[1][y] = out_no_error[y];
 						}
-						flag = true;
 						break;
 					}
 				}
@@ -545,6 +549,10 @@ int encrypt_find_different(byte in[16],byte out[16],byte key[16],byte outex[16],
 		}
 		return_num = later_filter_difference_chain(delta_value,differential_cipher_4_error,arr_delta,
 		relationship_delta_difference_cipher,diff_delta_count);
+		fpWrite = fopen("experiment.txt", "a+");
+		printf("第二次过滤返回值：%d",return_num);
+		fprintf(fpWrite,"第二次过滤返回值：%d",return_num);
+		fclose(fpWrite);
 	}
 	if(no_chain_flag==1)(*no_chain)++;
 	fpWrite = fopen("experiment.txt", "a+");
