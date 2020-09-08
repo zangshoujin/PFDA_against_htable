@@ -501,8 +501,8 @@ int encrypt_find_different(byte in[16],byte out[16],byte key[16],byte outex[16],
 							different_count++;
 						}
 					}
-					if(different_count == 4 && (!error_local[different_local[0]] || !error_local[different_local[1]] || 
-						!error_local[different_local[2]] || !error_local[different_local[3]]) && !collect_four_done){//第九轮出错，导致密文四个字节不同
+					if(different_count == 4 && dc[rddc].diff_local[0] == different_local[0] && dc[rddc].diff_local[1] == different_local[1] &&
+							dc[rddc].diff_local[2] == different_local[2] && dc[rddc].diff_local[3] == different_local[3]){
 
 						if(!((different_local[0]==0&&different_local[1]==7&&different_local[2]==10&&different_local[3]==13)||
 							(different_local[0]==1&&different_local[1]==4&&different_local[2]==11&&different_local[3]==14)||
@@ -510,7 +510,7 @@ int encrypt_find_different(byte in[16],byte out[16],byte key[16],byte outex[16],
 							(different_local[0]==3&&different_local[1]==6&&different_local[2]==9&&different_local[3]==12)))
 							continue;//把那些错误位置不是0，7，10，13；1，4，11，14；2，5，8，15；3，6，9，12的排除
 						
-						FILE *fpWrite = fopen("experiment.txt", "a+");
+						fpWrite = fopen("experiment.txt", "a+");
 						fprintf(fpWrite,"第%d次加密有%d字节不同!\n",current_cipher_number,different_count);
 						fclose(fpWrite);
 						printf("第%d次加密有%d字节不同!\n",current_cipher_number,different_count);
