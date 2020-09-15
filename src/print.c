@@ -36,7 +36,7 @@ void print_4_by_4_int(int temp[16]){
 
 int print_count(int first_success_num,int first_fail_num,int first_out_time_num,int second_success_num_in_fail,int second_fail_num_in_fail,
 	int second_out_time_num_in_fail,int second_success_num_in_out_time,int second_fail_num_in_out_time,
-	int second_out_time_num_in_out_time,int other_fail_num,int no_chain_num,int more_chain_num,int match_four_num,int invalid_error_num){
+	int second_out_time_num_in_out_time,int other_fail_num,int no_chain_num,int more_chain_num,int match_four_num,int invalid_error_num,int overtime_success_num){
 	
 	FILE *fpWrite = fopen("experiment.txt", "a+");
 	printf("first_success_num:%d\n",first_success_num);
@@ -70,6 +70,9 @@ int print_count(int first_success_num,int first_fail_num,int first_out_time_num,
 	fprintf(fpWrite,"match_four_num:%d\n",match_four_num);
 	printf("invalid_error_num:%d\n",invalid_error_num);
 	fprintf(fpWrite,"invalid_error_num:%d\n",invalid_error_num);
+
+	printf("overtime_success_num:%d\n",overtime_success_num);
+	fprintf(fpWrite,"overtime_success_num:%d\n",overtime_success_num);
 	fclose(fpWrite);
 	return 0;
 }
@@ -77,27 +80,27 @@ int print_count(int first_success_num,int first_fail_num,int first_out_time_num,
 
 int print_encrypt_num(int first_encrypt_num[],int all_encrypt_num[],int second_fail_encrypt_num[],int second_out_time_encrypt_num[]){
 	FILE *fpWrite = fopen("encrypt_times.txt", "a+");
-	fprintf(fpWrite,"firstencrypt_num:\n");
+	fprintf(fpWrite,"first_encrypt_num:\n");
 	for(int i=0;i<Experment_num;i++){
-		fprintf(fpWrite,"%d/t",first_encrypt_num[i]);
+		fprintf(fpWrite,"%d\t",first_encrypt_num[i]);
 		if((i+1)%10==0)fprintf(fpWrite,"\n");
 	}
 	fprintf(fpWrite,"\n");
 	fprintf(fpWrite,"all_encrypt_num:\n");
 	for(int i=0;i<Experment_num;i++){
-		fprintf(fpWrite,"%d/t",all_encrypt_num[i]);
+		fprintf(fpWrite,"%d\t",all_encrypt_num[i]);
 		if((i+1)%10==0)fprintf(fpWrite,"\n");
 	}
 	fprintf(fpWrite,"\n");
 	fprintf(fpWrite,"seconde_fail_encrypt_num:\n");
 	for(int i=0;i<Experment_num;i++){
-		fprintf(fpWrite,"%d/t",second_fail_encrypt_num[i]);
+		fprintf(fpWrite,"%d\t",second_fail_encrypt_num[i]);
 		if((i+1)%10==0)fprintf(fpWrite,"\n");
 	}
 	fprintf(fpWrite,"\n");
 	fprintf(fpWrite,"second_out_time_encrypt_num:\n");
 	for(int i=0;i<Experment_num;i++){
-		fprintf(fpWrite,"%d/t",second_out_time_encrypt_num[i]);
+		fprintf(fpWrite,"%d\t",second_out_time_encrypt_num[i]);
 		if((i+1)%10==0)fprintf(fpWrite,"\n");
 	}
 	fprintf(fpWrite,"\n");

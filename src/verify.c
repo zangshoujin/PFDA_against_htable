@@ -23,7 +23,7 @@ int verify_online_key(byte guess_key_10round[16][16],byte key_10round[16],byte w
 															for(int a14=0;a14<candidiate_key_count[14];a14++){
 																for(int a15=0;a15<candidiate_key_count[15];a15++){
 																	verify_encrypt_num++;
-																	if(verify_encrypt_num>=33554432){
+																	if(verify_encrypt_num >= OverTime_Num){
 																		/*
 																			2的30次方1073741824  
 																			2的20次方1048576
@@ -60,7 +60,7 @@ int verify_online_key(byte guess_key_10round[16][16],byte key_10round[16],byte w
 																	byte outex[16]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 																	byte guess_main_key[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 																	recovery_main_key(guess_key,guess_main_key);
-																	run_aes_share(in,out,guess_main_key,outex,n,&subbyte_htable,nt,base); 
+																	run_aes_share_no_error(in,out,guess_main_key,outex,n,&subbyte_htable_no_error,nt,base); 
 																	for(int o=0;o<16;o++){
 																		if(cipher_verify[o]==out[o]){
 																			count_equal_num++;
@@ -173,7 +173,7 @@ int verify_offline_key(byte guess_key_10round[16][16],byte key_10round[16],byte 
 															for(int a14=0;a14<candidiate_key_count[14];a14++){
 																for(int a15=0;a15<candidiate_key_count[15];a15++){
 																	verify_encrypt_num++;
-																	if(verify_encrypt_num>=4194304){
+																	if(verify_encrypt_num >= OverTime_Num){
 																		/*htable的方法运行速度慢很多
 																			2的30次方1073741824  
 																			2的20次方1048576，超时时间600s

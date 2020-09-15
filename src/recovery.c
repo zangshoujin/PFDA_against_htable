@@ -3,8 +3,9 @@
 int recovery_10round_key(byte delta,byte differential_cipher_4_error[4][4],byte arr_delta[4][4],
 	int relationship_delta_difference_cipher[4][4],struct Different_Cipher dc[4],byte guess_key_10round[16][16],
 	byte key_10round[16],byte w[176],int diff_delta_count[4],int* first_success_num,int* first_fail_num,byte cipher_verify[16]
-	,byte in[16],int n,int nt,int base,byte reall_main_key[16],int *first_out_time_num,int *other_fail_num){
-
+	,byte in[16],int n,int nt,int base,byte reall_main_key[16],int *first_out_time_num,int *other_fail_num,int *overtime_success_num){
+    
+    int chain_num[16] = {0};
 	int candidiate_key_count[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 	for(int i=0;i<4;i++){//遍历四对密文that有四个字节不同的
 		for(int j=0;j<4;j++){//遍历每对（有四个字节不同的）密文的每一对不同字节
@@ -18,6 +19,9 @@ int recovery_10round_key(byte delta,byte differential_cipher_4_error[4][4],byte 
 							FILE *fpWrite = fopen("experiment.txt", "a+");
 							fprintf(fpWrite,"第十轮子密钥第%2d个字节可能是：%02x %02x\n",k,out1 ^ dc[i].diff_cipher[0][k],out1 ^ dc[i].diff_cipher[1][k]);
 							fclose(fpWrite);
+
+                            chain_num[k] += 2;
+
 							guess_key_10round[k][candidate_count++] = out1 ^ dc[i].diff_cipher[0][k];
 							guess_key_10round[k][candidate_count++] = out1 ^ dc[i].diff_cipher[1][k];
 							candidiate_key_count[k] = candidate_count;
@@ -33,6 +37,9 @@ int recovery_10round_key(byte delta,byte differential_cipher_4_error[4][4],byte 
 							fprintf(fpWrite,"第十轮子密钥第%2d个字节可能是：%02x %02x %02x %02x\n",k,out1 ^ dc[i].diff_cipher[0][k],
 								out1 ^ dc[i].diff_cipher[1][k],out3 ^ dc[i].diff_cipher[0][k],out3 ^ dc[i].diff_cipher[1][k]);
 							fclose(fpWrite);
+
+                            chain_num[k] += 4;
+
 							guess_key_10round[k][candidate_count++] = out1 ^ dc[i].diff_cipher[0][k];
 							guess_key_10round[k][candidate_count++] = out1 ^ dc[i].diff_cipher[1][k];
 							guess_key_10round[k][candidate_count++] = out3 ^ dc[i].diff_cipher[0][k];
@@ -51,8 +58,17 @@ int recovery_10round_key(byte delta,byte differential_cipher_4_error[4][4],byte 
 			}
 		}
 	}
+
+    long long chain_sum = 1;
+    for(int i=0;i<16;i++)
+        chain_sum *= chain_num[i];
+    
 	int re_vok = verify_offline_key(guess_key_10round,key_10round,w,candidiate_key_count,first_success_num,first_fail_num,cipher_verify,
 	in,n,nt,base,reall_main_key,first_out_time_num,other_fail_num);
+
+    if(re_vok == 0 && chain_sum >= OverTime_Num){
+        (*overtime_success_num)++;
+    }
 	if(re_vok == -1)
 		return -1;
 	else if(re_vok == -2)
