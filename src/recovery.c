@@ -63,8 +63,8 @@ int recovery_10round_key(byte delta,byte differential_cipher_4_error[4][4],byte 
     FILE *fpWrite = fopen("experiment.txt", "a+");
     for(int i=0;i<16;i++){
 		chain_sum *= chain_num[i];
-		printf("chain_num:%lld\n",chain_num[i]);
-		fprintf(fpWrite,"chain_num:%lld\n",chain_num[i]);
+		printf("chain_num:%d\n",chain_num[i]);
+		fprintf(fpWrite,"chain_num:%d\n",chain_num[i]);
 	}
     printf("\nchain_sum:%lld\n",chain_sum);
     fprintf(fpWrite,"\nchain_sum:%lld\n",chain_sum);
