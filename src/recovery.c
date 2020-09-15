@@ -66,7 +66,7 @@ int recovery_10round_key(byte delta,byte differential_cipher_4_error[4][4],byte 
 	int re_vok = verify_offline_key(guess_key_10round,key_10round,w,candidiate_key_count,first_success_num,first_fail_num,cipher_verify,
 	in,n,nt,base,reall_main_key,first_out_time_num,other_fail_num);
 
-    if(re_vok == 0 && chain_sum >= OverTime_Num){
+    if(re_vok == 1 && chain_sum >= OverTime_Num){
         (*overtime_success_num)++;
     }
 	if(re_vok == -1)
