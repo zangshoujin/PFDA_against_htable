@@ -5,7 +5,7 @@ int recovery_10round_key(byte delta,byte differential_cipher_4_error[4][4],byte 
 	byte key_10round[16],byte w[176],int diff_delta_count[4],int* first_success_num,int* first_fail_num,byte cipher_verify[16]
 	,byte in[16],int n,int nt,int base,byte reall_main_key[16],int *first_out_time_num,int *other_fail_num,int *overtime_success_num){
     
-    int chain_num[16] = {0};
+    int chain_num[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 	int candidiate_key_count[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 	for(int i=0;i<4;i++){//遍历四对密文that有四个字节不同的
 		for(int j=0;j<4;j++){//遍历每对（有四个字节不同的）密文的每一对不同字节
