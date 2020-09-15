@@ -63,10 +63,10 @@ int main(){
 	int base = 1;
   	int nt = 10;
 	diff_table();
-	int all_encrypt_num[Experment_num];
-	int first_encrypt_num[Experment_num];
-	int second_fail_encrypt_num[Experment_num];
-	int second_out_time_encrypt_num[Experment_num];
+	int all_encrypt_num[Experment_num] = {0,0,0,0,0,0,0,0,0,0};
+	int first_encrypt_num[Experment_num] = {0,0,0,0,0,0,0,0,0,0};
+	int second_fail_encrypt_num[Experment_num] = {0,0,0,0,0,0,0,0,0,0};
+	int second_out_time_encrypt_num[Experment_num] = {0,0,0,0,0,0,0,0,0,0};
 	double excute_time[Experment_num];//每次实验的执行时间，先不统计，因为现在还涉及读写文件，会消耗大量时间
 	int first_success_num = 0;//成功的次数
 	int second_success_num_in_fail = 0;
