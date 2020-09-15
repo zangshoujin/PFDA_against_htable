@@ -60,10 +60,13 @@ int recovery_10round_key(byte delta,byte differential_cipher_4_error[4][4],byte 
 	}
 
     long long chain_sum = 1;
-    for(int i=0;i<16;i++)
-        chain_sum *= chain_num[i];
-    printf("\nchain_sum:%lld\n",chain_sum);
     FILE *fpWrite = fopen("experiment.txt", "a+");
+    for(int i=0;i<16;i++){
+		chain_sum *= chain_num[i];
+		printf("chain_num:%lld\n",chain_num[i]);
+		fprintf(fpWrite,"chain_num:%lld\n",chain_num[i]);
+	}
+    printf("\nchain_sum:%lld\n",chain_sum);
     fprintf(fpWrite,"\nchain_sum:%lld\n",chain_sum);
     fclose(fpWrite);
 	int re_vok = verify_offline_key(guess_key_10round,key_10round,w,candidiate_key_count,first_success_num,first_fail_num,cipher_verify,
