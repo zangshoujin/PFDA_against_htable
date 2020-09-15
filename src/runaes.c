@@ -19,20 +19,6 @@
 #include "print.h"
 #include "encrypt.h"
 
-int random_plain(byte in[16]){
-	srand((unsigned)time(NULL) + rand());
-	//模拟每次攻击使用随机明文
-	for (int i = 0; i < 16; i++) {
-		in[i] = 0 + rand() % (256 - 0);
-	}
-	// printf("\n随机明文是\n");
-	// FILE *fpWrite = fopen("experiment.txt", "a+");
-	// fpWrite = fopen("experiment.txt", "a+");
-	// fprintf(fpWrite,"\n随机明文是\n");
-	// fclose(fpWrite);
-	// print_4_by_4(in);
-	return 0;
-}
 
 
 int random_key(byte in[16],byte out[16],byte key[16],byte outex[16],int nt,byte w[176]){
@@ -231,8 +217,8 @@ int main(){
 		excute_time[e] = (double)(middle2 - middle1)/ CLOCKS_PER_SEC;
 		fpWrite = fopen("experiment.txt", "a+");
 
-		printf("本次实验执行时间:%d\n",excute_time[e]);
-		fprintf(fpWrite,"本次实验执行时间:%d\n",excute_time[e]);
+		printf("本次实验执行时间:%f\n",excute_time[e]);
+		fprintf(fpWrite,"本次实验执行时间:%f\n",excute_time[e]);
 
 		print_count(first_success_num,first_fail_num,first_out_time_num, second_success_num_in_fail, second_fail_num_in_fail,
 			second_out_time_num_in_fail, second_success_num_in_out_time, second_fail_num_in_out_time,

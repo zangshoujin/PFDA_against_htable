@@ -1,5 +1,20 @@
 #include "encrypt.h"
 
+int random_plain(byte in[16]){
+	srand((unsigned)time(NULL) + rand());
+	//模拟每次攻击使用随机明文
+	for (int i = 0; i < 16; i++) {
+		in[i] = 0 + rand() % (256 - 0);
+	}
+	// printf("\n随机明文是\n");
+	// FILE *fpWrite = fopen("experiment.txt", "a+");
+	// fpWrite = fopen("experiment.txt", "a+");
+	// fprintf(fpWrite,"\n随机明文是\n");
+	// fclose(fpWrite);
+	// print_4_by_4(in);
+	return 0;
+}
+
 int encrypt_find_different(byte in[16],byte out[16],byte key[16],byte outex[16],int n,int nt,int base,byte* delta,
 	byte differential_cipher_4_error[4][4],struct Different_Cipher dc[4],int relationship_delta_difference_cipher[4][4],
 	int diff_delta_count[4],int* appear_4_but_not_match,int* no_chain,int* more_chain,int* match_four,byte cipher_verify[16],
