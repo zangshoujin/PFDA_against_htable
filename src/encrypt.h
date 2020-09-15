@@ -4,9 +4,12 @@
 #include "recovery.h"
 #include "aes_rp.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 #include "print.h"
 #include "filter.h"
 #include "aes_htable.h"
+
 
 typedef unsigned char byte;
 
