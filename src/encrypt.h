@@ -13,7 +13,7 @@
 
 typedef unsigned char byte;
 
-#define Cipher_num 1000
+#define Cipher_num 10000
 
 #define Experment_num 10
 #define Share_num 2
