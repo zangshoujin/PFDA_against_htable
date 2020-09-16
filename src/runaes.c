@@ -210,7 +210,10 @@ int main(){
 				guess_key_10round,key_10round,w,diff_delta_count,&second_success_num_in_out_time,&second_fail_num_in_out_time,cipher_verify,plain_verify,n,nt,base,key,
 				&second_out_time_num_in_out_time,&other_fail_num,&overtime_success_num,&overtime_fail_num,&overtime_overtime_num);
 		}
-		
+		fpWrite = fopen("experiment.txt", "a+");
+		printf("second_encrypt_num:%d\n",all_encrypt_num[e]);
+		fprintf(fpWrite,"second_encrypt_num:%d\n",all_encrypt_num[e]);
+		fclose(fpWrite);
 		//recovery_main_key(key_10round,main_key);
 		for(int i=0;i<256;i++){	
 			sbox[i] = sbox_no_error[i];//恢复sbox
@@ -221,7 +224,7 @@ int main(){
 
 		printf("本次实验执行时间:%f\n",excute_time[e]);
 		fprintf(fpWrite,"本次实验执行时间:%f\n",excute_time[e]);
-
+		fclose(fpWrite);
 		print_count(first_success_num,first_fail_num,first_out_time_num, second_success_num_in_fail, second_fail_num_in_fail,
 			second_out_time_num_in_fail, second_success_num_in_out_time, second_fail_num_in_out_time,
 			second_out_time_num_in_out_time, other_fail_num, no_chain_num, more_chain_num, match_four_num, invalid_error_num,
@@ -248,7 +251,7 @@ int main(){
 	fprintf(fpWrite,"share个数:%d\n",n);
 	printf("平均需要加密%d次才能找到16个字节。\n最多需要%d次，最少需要%d次。\n",sum/Experment_num,max,min);
 	fprintf(fpWrite,"平均需要加密%d次才能找到16个字节。\n最多需要%d次，最少需要%d次。\n",sum/Experment_num,max,min);
-
+	fclose(fpWrite);
 	print_count(first_success_num,first_fail_num,first_out_time_num, second_success_num_in_fail, second_fail_num_in_fail,
 			second_out_time_num_in_fail, second_success_num_in_out_time, second_fail_num_in_out_time,
 			second_out_time_num_in_out_time, other_fail_num, no_chain_num, more_chain_num, match_four_num, invalid_error_num,
@@ -256,6 +259,7 @@ int main(){
 	
 	finish = clock(); 
 	duration = (double)(finish - start) / CLOCKS_PER_SEC;  
+	fpWrite = fopen("experiment.txt", "a+");
 	printf("总执行时间：%f seconds\n", duration ); 
 	fprintf(fpWrite,"总执行时间：%f seconds\n", duration );
 	fclose(fpWrite); 
