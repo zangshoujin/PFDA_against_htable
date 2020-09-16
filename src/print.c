@@ -36,7 +36,8 @@ void print_4_by_4_int(int temp[16]){
 
 int print_count(int first_success_num,int first_fail_num,int first_out_time_num,int second_success_num_in_fail,int second_fail_num_in_fail,
 	int second_out_time_num_in_fail,int second_success_num_in_out_time,int second_fail_num_in_out_time,
-	int second_out_time_num_in_out_time,int other_fail_num,int no_chain_num,int more_chain_num,int match_four_num,int invalid_error_num,int overtime_success_num){
+	int second_out_time_num_in_out_time,int other_fail_num,int no_chain_num,int more_chain_num,int match_four_num,int invalid_error_num,
+	int overtime_success_num,int overtime_fail_num,int overtime_overtime_num){
 	
 	FILE *fpWrite = fopen("experiment.txt", "a+");
 	printf("first_success_num:%d\n",first_success_num);
@@ -73,6 +74,10 @@ int print_count(int first_success_num,int first_fail_num,int first_out_time_num,
 
 	printf("overtime_success_num:%d\n",overtime_success_num);
 	fprintf(fpWrite,"overtime_success_num:%d\n",overtime_success_num);
+	printf("overtime_fail_num:%d\n",overtime_fail_num);
+	fprintf(fpWrite,"overtime_fail_num:%d\n",overtime_fail_num);
+	printf("overtime_overtime_num:%d\n",overtime_overtime_num);
+	fprintf(fpWrite,"overtime_overtime_num:%d\n",overtime_overtime_num);
 	fclose(fpWrite);
 	return 0;
 }

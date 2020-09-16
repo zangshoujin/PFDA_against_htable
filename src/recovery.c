@@ -3,7 +3,8 @@
 int recovery_10round_key(byte delta,byte differential_cipher_4_error[4][4],byte arr_delta[4][4],
 	int relationship_delta_difference_cipher[4][4],struct Different_Cipher dc[4],byte guess_key_10round[16][16],
 	byte key_10round[16],byte w[176],int diff_delta_count[4],int* first_success_num,int* first_fail_num,byte cipher_verify[16]
-	,byte in[16],int n,int nt,int base,byte reall_main_key[16],int *first_out_time_num,int *other_fail_num,int *overtime_success_num){
+	,byte in[16],int n,int nt,int base,byte reall_main_key[16],int *first_out_time_num,int *other_fail_num,int *overtime_success_num,
+	int *overtime_fail_num,int *overtime_overtime_num){
     
     int chain_num[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 	int candidiate_key_count[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
@@ -75,6 +76,12 @@ int recovery_10round_key(byte delta,byte differential_cipher_4_error[4][4],byte 
     if(re_vok == 1 && chain_sum >= OverTime_Num){
         (*overtime_success_num)++;
     }
+	else if((re_vok == -1 || re_vok == -2) && chain_sum >= OverTime_Num){
+		(*overtime_fail_num)++;
+	}
+	else if(re_vok == -3 && chain_sum >= OverTime_Num){
+		(*overtime_overtime_num)++;
+	}
 	if(re_vok == -1)
 		return -1;
 	else if(re_vok == -2)
