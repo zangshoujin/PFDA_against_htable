@@ -67,10 +67,12 @@ int main(){
 	int first_encrypt_num[Experment_num] ;
 	int second_fail_encrypt_num[Experment_num] ;
 	int second_out_time_encrypt_num[Experment_num] ;
-	memset(all_encrypt_num,0,Experment_num);
-	memset(first_encrypt_num,0,Experment_num);
-	memset(second_fail_encrypt_num,0,Experment_num);
-	memset(second_out_time_encrypt_num,0,Experment_num);
+	for(int exp=0;exp<Experment_num;exp++){
+		all_encrypt_num[exp] = 0;
+		first_encrypt_num[exp] = 0;
+		second_fail_encrypt_num[exp] = 0;
+		second_out_time_encrypt_num[exp] = 0;
+	}
 	double excute_time[Experment_num];//每次实验的执行时间，先不统计，因为现在还涉及读写文件，会消耗大量时间
 	int first_success_num = 0;//成功的次数
 	int second_success_num_in_fail = 0;
