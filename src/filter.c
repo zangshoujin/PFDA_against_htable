@@ -3,7 +3,7 @@
 
 int first_filter_difference_chain(byte delta,byte differential_cipher_4_error[4][4],byte arr_delta[4][4],
 	int relationship_delta_difference_cipher[4][4],int diff_delta_count[4],int* appear_4_but_not_match,int* no_chain,
-	int* more_chain,int* match_four){
+	int* more_chain,int* one_chain){
 	int num = 0;
 	int temp[4] = {0,0,0,0};
 	for(int i=0;i<4;i++){//遍历differential_cipher_4_error的第一维
@@ -36,7 +36,7 @@ int first_filter_difference_chain(byte delta,byte differential_cipher_4_error[4]
 		printf("%d\n",diff_delta_count[i]);
 	}
 	if(diff_delta_count[0]==1&&diff_delta_count[1]==1&&diff_delta_count[2]==1&&diff_delta_count[3]==1){
-		(*match_four)++;
+		(*one_chain)++;
 	}
 	else if(diff_delta_count[0]>=1&&diff_delta_count[1]>=1&&diff_delta_count[2]>=1&&diff_delta_count[3]>=1){
 		(*more_chain)++;

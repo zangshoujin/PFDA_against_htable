@@ -36,7 +36,7 @@ void print_4_by_4_int(int temp[16]){
 
 int print_count(int first_success_num,int first_fail_num,int first_out_time_num,int second_success_num_in_fail,int second_fail_num_in_fail,
 	int second_out_time_num_in_fail,int second_success_num_in_out_time,int second_fail_num_in_out_time,
-	int second_out_time_num_in_out_time,int other_fail_num,int no_chain_num,int more_chain_num,int match_four_num,int invalid_error_num,
+	int second_out_time_num_in_out_time,int other_fail_num,int no_chain_num,int more_chain_num,int one_chain_num,int invalid_error_num,
 	int overtime_success_num,int overtime_fail_num,int overtime_overtime_num){
 	
 	FILE *fpWrite = fopen("experiment.txt", "a+");
@@ -67,8 +67,8 @@ int print_count(int first_success_num,int first_fail_num,int first_out_time_num,
 	fprintf(fpWrite,"no_chain_num:%d\n",no_chain_num);
 	printf("more_chain_num:%d\n",more_chain_num);
 	fprintf(fpWrite,"more_chain_num:%d\n",more_chain_num);
-	printf("match_four_num:%d\n",match_four_num);
-	fprintf(fpWrite,"match_four_num:%d\n",match_four_num);
+	printf("one_chain_num:%d\n",one_chain_num);
+	fprintf(fpWrite,"one_chain_num:%d\n",one_chain_num);
 	printf("invalid_error_num:%d\n",invalid_error_num);
 	fprintf(fpWrite,"invalid_error_num:%d\n",invalid_error_num);
 

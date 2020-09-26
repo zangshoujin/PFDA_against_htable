@@ -84,7 +84,7 @@ int main(){
 	int appear_4_but_not_match = 0;//
 	int no_chain_num = 0;//找不到链的情况（继续找的情况）
 	int more_chain_num = 0;//匹配多条链的情况
-	int match_four_num = 0;//刚好匹配四条链的情况
+	int one_chain_num = 0;//刚好匹配四条链的情况
 	int invalid_error_num = 0;//注入无效错误的情况
 	int first_out_time_num = 0;//超时的次数
 	int second_out_time_num_in_fail = 0;
@@ -150,7 +150,7 @@ int main(){
 		byte cipher_verify[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};//验证的时候使用
 		all_encrypt_num[e] = encrypt_find_different(in,out,key,outex,n,nt,base,&delta,differential_cipher_4_error,dc,
 			relationship_delta_difference_cipher,diff_delta_count,&appear_4_but_not_match,&no_chain_num,&more_chain_num,
-			&match_four_num,cipher_verify,plain_verify);
+			&one_chain_num,cipher_verify,plain_verify);
 		first_encrypt_num[e] = 	all_encrypt_num[e];
 		byte guess_key_10round[16][16]={{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 										{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -175,7 +175,7 @@ int main(){
 			byte cipher_verify[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};//验证的时候使用
 			second_fail_encrypt_num[e] = encrypt_find_different(in,out,key,outex,n,nt,base,&delta,differential_cipher_4_error,dc,
 				relationship_delta_difference_cipher,diff_delta_count,&appear_4_but_not_match,&no_chain_num,&more_chain_num,
-				&match_four_num,cipher_verify,plain_verify);
+				&one_chain_num,cipher_verify,plain_verify);
 			all_encrypt_num[e] += second_fail_encrypt_num[e];		
 			byte guess_key_10round[16][16]={{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 											{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -201,7 +201,7 @@ int main(){
 			byte cipher_verify[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};//验证的时候使用
 			second_out_time_encrypt_num[e] = encrypt_find_different(in,out,key,outex,n,nt,base,&delta,differential_cipher_4_error,dc,
 				relationship_delta_difference_cipher,diff_delta_count,&appear_4_but_not_match,&no_chain_num,&more_chain_num,
-				&match_four_num,cipher_verify,plain_verify);	
+				&one_chain_num,cipher_verify,plain_verify);	
 			all_encrypt_num[e] += second_out_time_encrypt_num[e];
 			byte guess_key_10round[16][16]={{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 											{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -234,7 +234,7 @@ int main(){
 		fclose(fpWrite);
 		print_count(first_success_num,first_fail_num,first_out_time_num, second_success_num_in_fail, second_fail_num_in_fail,
 			second_out_time_num_in_fail, second_success_num_in_out_time, second_fail_num_in_out_time,
-			second_out_time_num_in_out_time, other_fail_num, no_chain_num, more_chain_num, match_four_num, invalid_error_num,
+			second_out_time_num_in_out_time, other_fail_num, no_chain_num, more_chain_num, one_chain_num, invalid_error_num,
 			overtime_success_num,overtime_fail_num,overtime_overtime_num);
 	}
 	print_encrypt_num( first_encrypt_num, all_encrypt_num, second_fail_encrypt_num, second_out_time_encrypt_num);
@@ -261,7 +261,7 @@ int main(){
 	fclose(fpWrite);
 	print_count(first_success_num,first_fail_num,first_out_time_num, second_success_num_in_fail, second_fail_num_in_fail,
 			second_out_time_num_in_fail, second_success_num_in_out_time, second_fail_num_in_out_time,
-			second_out_time_num_in_out_time, other_fail_num, no_chain_num, more_chain_num, match_four_num, invalid_error_num,
+			second_out_time_num_in_out_time, other_fail_num, no_chain_num, more_chain_num, one_chain_num, invalid_error_num,
 			overtime_success_num,overtime_fail_num,overtime_overtime_num);
 	
 	finish = clock(); 
