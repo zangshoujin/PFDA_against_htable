@@ -210,7 +210,7 @@ int verify_offline_key(byte guess_key_10round[16][16],byte key_10round[16],byte 
 																	byte outex[16]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 																	byte guess_main_key[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 																	recovery_main_key(guess_key,guess_main_key);
-																	run_aes_share_no_error(in,out,guess_main_key,outex,n,&subbyte_htable,nt,base); 
+																	run_aes_share_no_error(in,out,guess_main_key,outex,n,&subbyte_htable_no_error,nt,base); 
 																	for(int o=0;o<16;o++){
 																		if(cipher_verify[o]==out[o]){
 																			count_equal_num++;
