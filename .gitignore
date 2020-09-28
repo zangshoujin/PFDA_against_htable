@@ -30,6 +30,7 @@
 *.exe
 *.out
 *.app
+*.txt
 .DS_Store
 src/encrypt_state.txt
 src/experiment.txt
