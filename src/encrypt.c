@@ -1,5 +1,5 @@
 #include "encrypt.h"
-
+#include "print.h"
 int random_plain(byte in[16]){
 	srand((unsigned)time(NULL) + rand());
 	//模拟每次攻击使用随机明文
