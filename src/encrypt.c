@@ -40,7 +40,7 @@ int encrypt_find_different(byte in[16],byte out[16],byte key[16],byte outex[16],
 			for(int i=0;i<16;i++){
 				out_error[i] = out[i];
 			}
-			run_aes_share_no_error_print(in,out,key,outex,n,&subbyte_htable_no_error,nt,base);
+			run_aes_share_print(in,out,key,outex,n,&subbyte_htable_no_error,nt,base);
 			for(int i=0;i<16;i++){
 				out_no_error[i] = out[i];
 			}
@@ -50,7 +50,7 @@ int encrypt_find_different(byte in[16],byte out[16],byte key[16],byte outex[16],
 			for(int i=0;i<16;i++){
 				out_error[i] = out[i];
 			}
-			run_aes_share_no_error(in,out,key,outex,n,&subbyte_htable_no_error,nt,base); 
+			run_aes_share(in,out,key,outex,n,&subbyte_htable_no_error,nt,base); 
 			for(int i=0;i<16;i++){
 				out_no_error[i] = out[i];
 			}
@@ -220,7 +220,7 @@ int encrypt_find_different(byte in[16],byte out[16],byte key[16],byte outex[16],
 						for(int i=0;i<16;i++){
 							out_error[i] = out[i];
 						}
-						run_aes_share_no_error_print(in,out,key,outex,n,&subbyte_htable_no_error,nt,base);
+						run_aes_share_print(in,out,key,outex,n,&subbyte_htable_no_error,nt,base);
 						for(int i=0;i<16;i++){
 							out_no_error[i] = out[i];
 						}
@@ -230,7 +230,7 @@ int encrypt_find_different(byte in[16],byte out[16],byte key[16],byte outex[16],
 						for(int i=0;i<16;i++){
 							out_error[i] = out[i];
 						}
-						run_aes_share_no_error(in,out,key,outex,n,&subbyte_htable_no_error,nt,base); 
+						run_aes_share(in,out,key,outex,n,&subbyte_htable_no_error,nt,base); 
 						for(int i=0;i<16;i++){
 							out_no_error[i] = out[i];
 						}

@@ -14,7 +14,7 @@ typedef unsigned char byte;
 
 #define Cipher_num 10000
 
-#define Experment_num 100
+#define Experment_num 1
 #define Share_num 2
 #define attack_round 3
 #define Is_random 1  //控制是否随机明文、密钥和错误,调试用 1:表示随机 0:表示固定
