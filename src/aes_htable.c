@@ -577,7 +577,7 @@ void subbyte_cs_htable_word_inc(byte *a,byte *b,int n)
   htable_small(b,v,n);
 }
 
-void subbyte_cs_htable_word_inc(byte *a,byte *b,int n)
+void subbyte_cs_htable_word_inc_no_error(byte *a,byte *b,int n)
 {
   int w=4;
   int n2=(n+1)/2;
