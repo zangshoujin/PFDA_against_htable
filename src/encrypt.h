@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 #ifndef __encrypt_h__
 #define __encrypt_h__
 
