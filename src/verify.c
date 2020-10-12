@@ -23,7 +23,7 @@ int verify_online_key(byte guess_key_10round[16][16],byte key_10round[16],byte w
 															for(int a14=0;a14<candidiate_key_count[14];a14++){
 																for(int a15=0;a15<candidiate_key_count[15];a15++){
 																	verify_encrypt_num++;
-																	if(verify_encrypt_num >= OverTime_Num){
+																	if(verify_encrypt_num >= timeout_Num){
 																		/*
 																			2的30次方1073741824  
 																			2的20次方1048576
@@ -151,8 +151,8 @@ int verify_online_key(byte guess_key_10round[16][16],byte key_10round[16],byte w
 }
 
 int verify_offline_key(byte guess_key_10round[16][16],byte key_10round[16],byte w[176],int candidiate_key_count[16],
-	int* first_success_num,int* first_fail_num,byte cipher_verify[16],byte in[16],int n,int nt,int base,byte reall_main_key[16],
-	int *first_out_time_num,int *other_fail_num){
+	int* success_num,int* fail_num,byte cipher_verify[16],byte in[16],int n,int nt,int base,byte reall_main_key[16],
+	int *out_time_num,int *other_fail_num){
 	int verify_encrypt_num = 0;	
 	for(int a0=0;a0<candidiate_key_count[0];a0++){
 		printf("\na0:%d\t",a0);
@@ -173,7 +173,7 @@ int verify_offline_key(byte guess_key_10round[16][16],byte key_10round[16],byte 
 															for(int a14=0;a14<candidiate_key_count[14];a14++){
 																for(int a15=0;a15<candidiate_key_count[15];a15++){
 																	verify_encrypt_num++;
-																	if(verify_encrypt_num >= OverTime_Num){
+																	if(verify_encrypt_num >= timeout_Num){
 																		/*htable的方法运行速度慢很多
 																			2的30次方1073741824  
 																			2的20次方1048576，超时时间600s
@@ -181,7 +181,7 @@ int verify_offline_key(byte guess_key_10round[16][16],byte key_10round[16],byte 
 																			2的23次方8388608，（超时时间大约是不到500秒）
 																			2的25次方33554432 （理论上这个的超时时间应该是1800秒）
 																		*/
-																		(*first_out_time_num)++;
+																		(*out_time_num)++;
 																		FILE *fpWrite = fopen("experiment.txt", "a+");
 																		printf("超时超时！\n");
 																		fprintf(fpWrite,"超时超时！\n");
@@ -230,7 +230,7 @@ int verify_offline_key(byte guess_key_10round[16][16],byte key_10round[16],byte 
 																			fprintf(fpWrite,"成功成功！！！\n");
 																			printf("\n恢复密钥成功！\n第十轮子密钥是：\n");
 																			fprintf(fpWrite,"\n恢复密钥成功！\n第十轮子密钥是：\n");
-																			(*first_success_num)++;
+																			(*success_num)++;
 																			key_10round[0] = guess_key_10round[0][a0];
 																			key_10round[1] = guess_key_10round[1][a1];
 																			key_10round[2] = guess_key_10round[2][a2];
@@ -297,6 +297,6 @@ int verify_offline_key(byte guess_key_10round[16][16],byte key_10round[16],byte 
 	printf("失败!!!\n");
 	fprintf(fpWrite,"失败！！！\n");
 	fclose(fpWrite);
-	(*first_fail_num)++;
+	(*fail_num)++;
 	return -1;
 }

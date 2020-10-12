@@ -34,10 +34,10 @@ void print_4_by_4_int(int temp[16]){
 	fclose(fpWrite);
 }
 
-int print_count(int first_success_num,int first_fail_num,int first_out_time_num,int second_success_num_in_fail,int second_fail_num_in_fail,
-	int second_out_time_num_in_fail,int second_success_num_in_out_time,int second_fail_num_in_out_time,
-	int second_out_time_num_in_out_time,int other_fail_num,int no_chain_num,int more_chain_num,int one_chain_num,int invalid_error_num,
-	int overtime_success_num,int overtime_fail_num,int overtime_overtime_num){
+int print_count(int first_success_num,int first_fail_num,int first_out_time_num,int success_num_in_fail[attack_round],int fail_num_in_fail[attack_round],
+	int out_time_num_in_fail[attack_round],int success_num_in_out_time[attack_round],int fail_num_in_out_time[attack_round],
+	int out_time_num_in_out_time[attack_round],int other_fail_num,int no_chain_num,int more_chain_num,int one_chain_num,int invalid_error_num,
+	int success_num_in_timeout,int fail_num_in_timeout,int timeout_num_in_timeout){
 	
 	FILE *fpWrite = fopen("experiment.txt", "a+");
 	printf("first_success_num:%d\n",first_success_num);
@@ -47,20 +47,22 @@ int print_count(int first_success_num,int first_fail_num,int first_out_time_num,
 	printf("first_out_time_num:%d\n",first_out_time_num);
 	fprintf(fpWrite,"first_out_time_num:%d\n",first_out_time_num);
 
-	printf("second_success_num_in_fail:%d\n",second_success_num_in_fail);
-	fprintf(fpWrite,"second_success_num_in_fail:%d\n",second_success_num_in_fail);
-	printf("second_fail_num_in_fail:%d\n",second_fail_num_in_fail);
-	fprintf(fpWrite,"second_fail_num_in_fail:%d\n",second_fail_num_in_fail);
-	printf("second_out_time_num_in_fail:%d\n",second_out_time_num_in_fail);
-	fprintf(fpWrite,"second_out_time_num_in_fail:%d\n",second_out_time_num_in_fail);
+	for(int i=1;i<attack_round;i++){
+		printf("%d_success_num_in_fail:%d\n",i+1,success_num_in_fail[i]);
+		fprintf(fpWrite,"%d_success_num_in_fail:%d\n",i+1,success_num_in_fail[i]);
+		printf("%d_fail_num_in_fail:%d\n",i+1,fail_num_in_fail[i]);
+		fprintf(fpWrite, "%ds_fail_num_in_fail:%d\n",i+1,fail_num_in_fail[i]);
+		printf("%d_out_time_num_in_fail:%d\n",i+1,out_time_num_in_fail[i]);
+		fprintf(fpWrite,"%d_out_time_num_in_fail:%d\n",i+1,out_time_num_in_fail[i]);
 
-	printf("second_success_num_in_out_time:%d\n",second_success_num_in_out_time);
-	fprintf(fpWrite,"second_success_num_in_out_time:%d\n",second_success_num_in_out_time);
-	printf("second_fail_num_in_out_time:%d\n",second_fail_num_in_out_time);
-	fprintf(fpWrite,"second_fail_num_in_out_time:%d\n",second_fail_num_in_out_time);
-	printf("second_out_time_num_in_out_time:%d\n",second_out_time_num_in_out_time);
-	fprintf(fpWrite,"second_out_time_num_in_out_time:%d\n",second_out_time_num_in_out_time);
-
+		printf("%d_success_num_in_out_time:%d\n",i+1,success_num_in_out_time[i]);
+		fprintf(fpWrite,"%d_success_num_in_out_time:%d\n",i+1,success_num_in_out_time[i]);
+		printf("%d_fail_num_in_out_time:%d\n",i+1,fail_num_in_out_time[i]);
+		fprintf(fpWrite,"%d_fail_num_in_out_time:%d\n",i+1,fail_num_in_out_time[i]);
+		printf("%d_out_time_num_in_out_time:%d\n",i+1,out_time_num_in_out_time[i]);
+		fprintf(fpWrite,"%d_out_time_num_in_out_time:%d\n",i+1,out_time_num_in_out_time[i]);
+	}
+	
 	printf("other_fail_num:%d\n",other_fail_num);
 	fprintf(fpWrite,"other_fail_num:%d\n",other_fail_num);
 	printf("no_chain_num:%d\n",no_chain_num);
@@ -72,18 +74,18 @@ int print_count(int first_success_num,int first_fail_num,int first_out_time_num,
 	printf("invalid_error_num:%d\n",invalid_error_num);
 	fprintf(fpWrite,"invalid_error_num:%d\n",invalid_error_num);
 
-	printf("overtime_success_num:%d\n",overtime_success_num);
-	fprintf(fpWrite,"overtime_success_num:%d\n",overtime_success_num);
-	printf("overtime_fail_num:%d\n",overtime_fail_num);
-	fprintf(fpWrite,"overtime_fail_num:%d\n",overtime_fail_num);
-	printf("overtime_overtime_num:%d\n",overtime_overtime_num);
-	fprintf(fpWrite,"overtime_overtime_num:%d\n",overtime_overtime_num);
+	printf("success_num_in_timeout:%d\n",success_num_in_timeout);
+	fprintf(fpWrite,"success_num_in_timeout:%d\n",success_num_in_timeout);
+	printf("fail_num_in_timeout:%d\n",fail_num_in_timeout);
+	fprintf(fpWrite,"fail_num_in_timeout:%d\n",fail_num_in_timeout);
+	printf("timeout_num_in_timeout:%d\n",timeout_num_in_timeout);
+	fprintf(fpWrite,"timeout_num_in_timeout:%d\n",timeout_num_in_timeout);
 	fclose(fpWrite);
 	return 0;
 }
 
-
-int print_encrypt_num(int first_encrypt_num[],int all_encrypt_num[],int second_fail_encrypt_num[],int second_out_time_encrypt_num[]){
+int print_encrypt_num(int first_encrypt_num[],int all_encrypt_num[],int later_fail_encrypt_num[][Experment_num],
+	int later_out_time_encrypt_num[][Experment_num]){
 	FILE *fpWrite = fopen("encrypt_times.txt", "a+");
 	fprintf(fpWrite,"first_encrypt_num:\n");
 	for(int i=0;i<Experment_num;i++){
@@ -91,24 +93,32 @@ int print_encrypt_num(int first_encrypt_num[],int all_encrypt_num[],int second_f
 		if((i+1)%10==0)fprintf(fpWrite,"\n");
 	}
 	fprintf(fpWrite,"\n");
+
 	fprintf(fpWrite,"all_encrypt_num:\n");
 	for(int i=0;i<Experment_num;i++){
 		fprintf(fpWrite,"%d\t",all_encrypt_num[i]);
 		if((i+1)%10==0)fprintf(fpWrite,"\n");
 	}
-	fprintf(fpWrite,"\n");
-	fprintf(fpWrite,"seconde_fail_encrypt_num:\n");
-	for(int i=0;i<Experment_num;i++){
-		fprintf(fpWrite,"%d\t",second_fail_encrypt_num[i]);
-		if((i+1)%10==0)fprintf(fpWrite,"\n");
+	fprintf(fpWrite,"\n");\
+
+	fprintf(fpWrite,"later_fail_encrypt_num:\n");
+	for(int j=1;j<attack_round;j++){
+		for(int i=0;i<Experment_num;i++){
+			fprintf(fpWrite,"%d\t",later_fail_encrypt_num[j][i]);
+			if((i+1)%10==0)fprintf(fpWrite,"\n");
+		}
+		fprintf(fpWrite,"\n");
 	}
-	fprintf(fpWrite,"\n");
-	fprintf(fpWrite,"second_out_time_encrypt_num:\n");
-	for(int i=0;i<Experment_num;i++){
-		fprintf(fpWrite,"%d\t",second_out_time_encrypt_num[i]);
-		if((i+1)%10==0)fprintf(fpWrite,"\n");
+
+	fprintf(fpWrite,"later_out_time_encrypt_num:\n");
+	for(int j=1;j<attack_round;j++){
+		for(int i=0;i<Experment_num;i++){
+			fprintf(fpWrite,"%d\t",later_out_time_encrypt_num[j][i]);
+			if((i+1)%10==0)fprintf(fpWrite,"\n");
+		}
+		fprintf(fpWrite,"\n");
 	}
-	fprintf(fpWrite,"\n");
+	
 	fclose(fpWrite);
 	return 0;
 }
