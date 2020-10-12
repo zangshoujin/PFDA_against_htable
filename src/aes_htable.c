@@ -113,6 +113,28 @@ void subbyte_htable_inc(byte *a,int n)
   read_htable(a[n-1],a,T,n);
 }
 
+void subbyte_htable_inc_no_error(byte *a,int n)
+{
+  byte T[n][K];
+  byte Tp[n][K];
+  byte b[n];
+  int i,j,k;
+ 
+  for(k=0;k<K;k++)
+    T[0][k]=sbox_no_error[k];
+
+  for(i=0;i<(n-1);i++)
+  {
+    shift_table(a[i],Tp,T,i+1);
+
+    for(k=0;k<K;k++)
+      T[i+1][k]=0;
+
+    refresh_table(T,Tp,i+1);
+  }
+  
+  read_htable(a[n-1],a,T,n);
+}
 
 void refreshword(word a[],int n)
 {
@@ -141,13 +163,27 @@ void init_table_word(word T[][K/4])
   }
 }
 
+void init_table_word_no_error(word T[][K/4])
+{
+  int w=4;
+  for(int k=0;k<K/w;k++)
+  {
+    word r=0;
+    for(int j=w-1;j>=0;j--)
+    {
+      r=r << 8;
+      r^=sbox[k*w+j];
+    }
+    T[0][k]=r;
+  }
+}
+
 void shift_table_word(byte a,word Tp[][K/4],word T[][K/4],int n)
 {
   for(int j=0;j<n;j++)
     for(int k=0;k<K/4;k++)
       Tp[j][k]=T[j][k ^ a];
 }
-
 
 void refresh_table_word(word T[][K/4],word Tp[][K/4],int ind)
 {
@@ -247,6 +283,27 @@ void subbyte_htable_word(byte *a,int n)  // n+4 bytes
   htable_small(a,b,n);
 }
 
+void subbyte_htable_word_no_error(byte *a,int n)  // n+4 bytes
+{
+  int w=4;
+  word T[n][K/w];  // n*256 bytes
+  word Tp[n][K/w];  // n*256 bytes
+  int i,k,k2,j;    // 16 bytes
+
+  init_table_word_no_error(T);
+
+  for(i=1;i<n;i++)
+    for(k=0;k<K/w;k++)
+      T[i][k]=0;
+  
+  htable_word(a,n-1,T,n);
+
+  word b[n];
+  read_htable_word(a[n-1]/4,b,T,n);
+  
+  htable_small(a,b,n);
+}
+
 void htable_word_inc(byte *a,int ell,int lam,word T[][K/4],int n)
 {
   int w=4;
@@ -297,6 +354,23 @@ void subbyte_htable_word_inc(byte *a,int n)  // n+4 bytes
   htable_small(a,b,n);
 }
 
+void subbyte_htable_word_inc_no_error(byte *a,int n)  // n+4 bytes
+{
+  int w=sizeof(word); // number of bytes to store in a word w=4
+  word T[n][K/w];  // n*256 bytes
+  word Tp[n][K/w]; // n*256 bytes
+  int i,k,k2,j;    // 16 bytes
+  word b[n];       // 4*n bytes (for 32-bit registers)
+
+  init_table_word_no_error(T);
+
+  htable_word_inc(a,1,n-1,T,n);
+
+  read_htable_word(a[n-1]/4,b,T,n);
+  
+  htable_small(a,b,n);
+}
+
 void common_shares(byte *a,byte *b,byte *r,byte *ap,byte *bp,int n)
 {
   for(int i=0;i<n/2;i++)
@@ -312,7 +386,6 @@ void common_shares(byte *a,byte *b,byte *r,byte *ap,byte *bp,int n)
     bp[n/2]=b[n-1];
   }
 }
-
 
 void subbyte_cs_htable_basic(byte *a,byte *b,int n)
 {
@@ -332,6 +405,38 @@ void subbyte_cs_htable(byte *a,byte *b,int n)
   
   for(int k=0;k<K;k++)
     T[0][k]=sbox[k];
+
+  for(int j=1;j<n;j++)
+    for(int k=0;k<K;k++)
+      T[j][k]=0;
+  
+  htable(r,n/2,T,n);
+  
+  byte T2[n][K];
+
+  for(int j=0;j<n;j++)
+    for(int k=0;k<K;k++)
+      T2[j][k]=T[j][k];
+
+  htable(ap,n2-1,T,n);
+  htable(bp,n2-1,T2,n);
+
+  read_htable(ap[n2-1],a,T,n);
+  read_htable(bp[n2-1],b,T2,n);
+}
+
+void subbyte_cs_htable_no_error(byte *a,byte *b,int n)
+{
+  int n2=(n+1)/2;
+  byte r[n/2];
+  byte ap[n2],bp[n2];
+
+  common_shares(a,b,r,ap,bp,n);
+
+  byte T[n][K];
+  
+  for(int k=0;k<K;k++)
+    T[0][k]=sbox_no_error[k];
 
   for(int j=1;j<n;j++)
     for(int k=0;k<K;k++)
@@ -390,6 +495,44 @@ void subbyte_cs_htable_word(byte *a,byte *b,int n)
   htable_small(b,v,n);
 }
 
+void subbyte_cs_htable_word_no_error(byte *a,byte *b,int n)
+{
+  int w=4;
+  int n2=(n+1)/2;
+  byte r[n/2];
+  byte ap[n2],bp[n2];
+
+  common_shares(a,b,r,ap,bp,n);
+
+  word T[n][K/w];
+  
+  init_table_word_no_error(T);
+
+  for(int i=1;i<n;i++)
+    for(int k=0;k<K/w;k++)
+      T[i][k]=0;
+
+  htable_word(r,n/2,T,n);
+  
+  word T2[n][K/w];
+
+  for(int j=0;j<n;j++)
+    for(int k=0;k<K/w;k++)
+      T2[j][k]=T[j][k];
+
+  htable_word(ap,n2-1,T,n);
+  htable_word(bp,n2-1,T2,n);
+
+  word u[n];
+  read_htable_word(ap[n2-1]/4,u,T,n);
+
+  word v[n];
+  read_htable_word(bp[n2-1]/4,v,T2,n);
+
+  htable_small(a,u,n);
+  htable_small(b,v,n);
+}
+
 void subbyte_cs_htable_word_inc(byte *a,byte *b,int n)
 {
   int w=4;
@@ -402,6 +545,50 @@ void subbyte_cs_htable_word_inc(byte *a,byte *b,int n)
   word T[n][K/w];
   
   init_table_word(T);
+
+  // we start with two output shares
+  int ell=2;
+
+  for(int j=1;j<ell;j++)
+    for(int k=0;k<K/w;k++)
+      T[j][k]=0;
+
+  htable_word_inc(r,ell,n/2,T,n);
+
+  int ell2=ell+n/2;
+  if(ell2>n) ell2=n;
+
+  word T2[n][K/w];
+
+  for(int j=0;j<ell2;j++)
+    for(int k=0;k<K/w;k++)
+      T2[j][k]=T[j][k];
+
+  htable_word_inc(ap,ell2,n2-1,T,n);
+  htable_word_inc(bp,ell2,n2-1,T2,n);
+
+  word u[n];
+  read_htable_word(ap[n2-1]/4,u,T,n);
+
+  word v[n];
+  read_htable_word(bp[n2-1]/4,v,T2,n);
+
+  htable_small(a,u,n);
+  htable_small(b,v,n);
+}
+
+void subbyte_cs_htable_word_inc(byte *a,byte *b,int n)
+{
+  int w=4;
+  int n2=(n+1)/2;
+  byte r[n/2];
+  byte ap[n2],bp[n2];
+
+  common_shares(a,b,r,ap,bp,n);
+
+  word T[n][K/w];
+  
+  init_table_word_no_error(T);
 
   // we start with two output shares
   int ell=2;
