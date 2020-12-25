@@ -8,10 +8,10 @@
 #include "prg.h"
 #include "prgmat.h"
 #include "aes_rp_prg.h"
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include "encrypt.h"
 
 #define NOLOC 0
 #define LOC 1
@@ -192,13 +192,11 @@ void aes_share_subkeys(byte in[16],byte out[16],byte *wshare[176],int n,void (*s
   for(round=1;round<10;round++){ 
     subbytestate_share(stateshare,n,subbyte_share_call);
     shiftrows_share(stateshare,n);
-    if (loc==NOLOC){         //???0 == 0 只有列混合，没有轮密钥加？
+    if (loc==NOLOC)        //???0 == 0 只有列混合，没有轮密钥加？
       mixcolumns_share(stateshare,n);
-    }
-    else{
+    else
       mixcolumns_share_loc(stateshare,n);
-      addroundkey_share(stateshare,wshare,round,n);
-    }
+    addroundkey_share(stateshare,wshare,round,n);
   }
   subbytestate_share(stateshare,n,subbyte_share_call);
   shiftrows_share(stateshare,n);
@@ -227,13 +225,11 @@ void aes_share_subkeys_no_error(byte in[16],byte out[16],byte *wshare[176],int n
   for(round=1;round<10;round++){ 
     subbytestate_share_no_error(stateshare,n,subbyte_share_call);
     shiftrows_share(stateshare,n);
-    if (loc==NOLOC){         //???0 == 0 只有列混合，没有轮密钥加？
+    if (loc==NOLOC)        //???0 == 0 只有列混合，没有轮密钥加？
       mixcolumns_share(stateshare,n);
-    }
-    else{
+    else
       mixcolumns_share_loc(stateshare,n);
-      addroundkey_share(stateshare,wshare,round,n);
-    }
+    addroundkey_share(stateshare,wshare,round,n);
   }
   subbytestate_share_no_error(stateshare,n,subbyte_share_call);
   shiftrows_share(stateshare,n);
@@ -402,7 +398,7 @@ void keyexpansion_share(byte key[16],byte *wshare[176],int n)
 void keyexpansion_share_no_error(byte key[16],byte *wshare[176],int n)
 {
   byte w[176];
-  keyexpansion(key,w);
+  keyexpansion_no_error(key,w);
 
   int randc=get_randcount();
   for(int i=0;i<176;i++)
@@ -418,12 +414,17 @@ int run_aes_share(byte in[16],byte out[16],byte key[16],byte outex[16],int n,voi
 {
   byte *wshare[176];
 
-  keyexpansion_share(key,wshare,n);//使用share技术进行密钥扩展
+  if(is_keyexpand_error){
+    keyexpansion_share(key,wshare,n);//使用share技术进行密钥扩展
+  }
+  else if(!is_keyexpand_error){
+    keyexpansion_share_no_error(key,wshare,n);
+  }
 
   init_randcount();//初始化使用随机次数为0 
   clock_t start=clock();
-
-  for(int i=0;i<1;i++)//这里原来i<nt,即nt<10,作者为了测试时间用
+  
+  for(int i=0;i<nt;i++)//这里原来i<nt,即nt<10,作者为了测试时间用
     aes_share_subkeys(in,out,wshare,n,subbyte_share_call,NOLOC);//加密轮函数
   clock_t end=clock();
 

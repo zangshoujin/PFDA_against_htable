@@ -37,7 +37,7 @@ void print_4_by_4_int(int temp[16]){
 int print_count(int first_success_num,int first_fail_num,int first_out_time_num,int success_num_in_fail[attack_round],int fail_num_in_fail[attack_round],
 	int out_time_num_in_fail[attack_round],int success_num_in_out_time[attack_round],int fail_num_in_out_time[attack_round],
 	int out_time_num_in_out_time[attack_round],int other_fail_num,int no_chain_num,int more_chain_num,int one_chain_num,int invalid_error_num,
-	int success_num_in_timeout,int fail_num_in_timeout,int timeout_num_in_timeout){
+	int success_num_in_timeout,int fail_num_in_timeout,int timeout_num_in_timeout,int cipher_num_not_enough){
 	
 	FILE *fpWrite = fopen("experiment.txt", "a+");
 	printf("first_success_num:%d\n",first_success_num);
@@ -85,6 +85,9 @@ int print_count(int first_success_num,int first_fail_num,int first_out_time_num,
 
 	printf("success_all_num:%d\n",success_all_num);
 	fprintf(fpWrite,"success_all_num:%d\n",success_all_num);
+
+	printf("cipher_num_not_enough:%d\n",cipher_num_not_enough);
+	fprintf(fpWrite,"cipher_num_not_enough:%d\n",cipher_num_not_enough);
 	fclose(fpWrite);
 	return 0;
 }

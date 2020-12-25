@@ -13,6 +13,7 @@
 void shiftrows_share(byte *stateshare[16],int n);
 void mixcolumns_share(byte *stateshare[16],int n);
 void addroundkey_share(byte *stateshare[16],byte *wshare[176],int round,int n);
+void keyexpansion_share_no_error(byte key[16],byte *wshare[176],int n);
 
 int run_aes_share(byte in[16],byte out[16],byte key[16],byte outex[16],int n,void (*subbyte_share_call)(byte *,int),int nt,int base);
 

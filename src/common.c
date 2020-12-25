@@ -34,11 +34,11 @@ int runalgo(void (*algo)(byte *,byte *,byte *),byte *in,byte *out,byte *key,byte
 
   start=clock();
     
-  for(i=0;i<nt;i++)
+  for(i=0;i<1;i++)
     algo(in,out,key);
   end=clock();
   dt=(int) (end-start);
-  if (base==0) base=dt;//若是第一次加密，base=加密初始耗时 
+  if (base==0) base=dt;
   report_time(dt,nt,base,0);
 
   //check_ciphertext(out,outex,nbyte);

@@ -172,7 +172,7 @@ void init_table_word_no_error(word T[][K/4])
     for(int j=w-1;j>=0;j--)
     {
       r=r << 8;
-      r^=sbox[k*w+j];
+      r^=sbox_no_error[k*w+j];
     }
     T[0][k]=r;
   }

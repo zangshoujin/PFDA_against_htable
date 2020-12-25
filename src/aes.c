@@ -163,6 +163,11 @@ byte subbyte(byte x)
   return sbox[x];
 }
 
+byte subbyte_no_error(byte x)
+{
+  return sbox_no_error[x];
+}
+
 // slow invsubbyte
 byte invsubbyte(byte x)
 {
@@ -284,11 +289,47 @@ void keyexpansion(byte *key,byte *w)
   }
 }
 
+void keyexpansion_no_error(byte *key,byte *w)
+{
+  int i,j;
+  byte temp[4];
+  
+  byte rcon[10];
+  setrcon(rcon);
+ 
+  for(i=0;i<16;i++)
+    w[i]=key[i];
+
+  for(i=16;i<176;i+=4)
+  {
+    for(j=0;j<4;j++)
+      temp[j]=w[i-4+j];
+
+    if((i % 16)==0)
+    {
+      temp[0]=subbyte_no_error(w[i-3]) ^ rcon[i/16-1];
+      temp[1]=subbyte_no_error(w[i-2]);
+      temp[2]=subbyte_no_error(w[i-1]);
+      temp[3]=subbyte_no_error(w[i-4]);
+    }
+
+    for(j=0;j<4;j++)
+      w[i+j]=w[i+j-16] ^ temp[j];
+  }
+}
+
 void subbytestate(byte *state)
 {
   int i;
   for(i=0;i<16;i++) 
     state[i]=subbyte(state[i]);
+}
+
+void subbytestate_no_error(byte *state)
+{
+  int i;
+  for(i=0;i<16;i++) 
+    state[i]=subbyte_no_error(state[i]);
 }
 
 void aes(byte in[16],byte out[16],byte w[176])
@@ -318,23 +359,50 @@ void aes(byte in[16],byte out[16],byte w[176])
     out[i]=state[i];
 }
 
+void aes_no_error(byte in[16],byte out[16],byte w[176])
+{
+  int i,j;
+  int round=0;
+  byte state[16];
+
+  for(i=0;i<16;i++)
+    state[i]=in[i];
+
+  addroundkey(state,w,0);
+
+  for(round=1;round<10;round++)
+  { 
+    subbytestate_no_error(state);
+    shiftrows(state);
+    mixcolumns(state);
+    addroundkey(state,w,round);
+  }
+ 
+  subbytestate_no_error(state);
+  shiftrows(state);
+  addroundkey(state,w,10);
+
+  for(i=0;i<16;i++)
+    out[i]=state[i];
+}
+
 int run_aes(void (*algo)(byte *,byte *,byte *),byte *in,byte *out,byte *key,byte *outex,int nt,int base,byte w[176])
 {
   keyexpansion(key,w);
-  FILE *fpWrite = fopen("experiment.txt", "a+");  
-  for(int i=0;i<176;i++){
-  	printf("0x%02x,",w[i]);
-    fprintf(fpWrite,"0x%02x,",w[i]);
-  	if((i+1)%4 == 0){
-      printf("\n");
-      fprintf(fpWrite,"\n");
-      }
-  	if((i+1)%16 == 0){
-      printf("\n");
-      fprintf(fpWrite,"\n");
-      }
-  }
-  fclose(fpWrite);
+  // FILE *fpWrite = fopen("experiment.txt", "a+");  
+  // for(int i=0;i<176;i++){
+  // 	printf("0x%02x,",w[i]);
+  //   fprintf(fpWrite,"0x%02x,",w[i]);
+  // 	if((i+1)%4 == 0){
+  //     printf("\n");
+  //     fprintf(fpWrite,"\n");
+  //     }
+  // 	if((i+1)%16 == 0){
+  //     printf("\n");
+  //     fprintf(fpWrite,"\n");
+  //     }
+  // }
+  // fclose(fpWrite);
   return runalgo(algo,in,out,w,outex,16,nt,base);
 }
 

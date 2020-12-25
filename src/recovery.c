@@ -2,7 +2,7 @@
 
 int recovery_10round_key(byte delta,byte differential_cipher_4_error[4][4],byte arr_delta[4][4],
 	int relationship_delta_difference_cipher[4][4],struct Different_Cipher dc[4],byte guess_key_10round[16][16],
-	byte key_10round[16],byte w[176],int diff_delta_count[4],int* first_success_num,int* first_fail_num,byte cipher_verify[16]
+	byte w[176],int diff_delta_count[4],int* first_success_num,int* first_fail_num,byte cipher_verify[16]
 	,byte in[16],int n,int nt,int base,byte reall_main_key[16],int *first_out_time_num,int *other_fail_num,int *overtime_success_num,
 	int *overtime_fail_num,int *overtime_timeout_num){
     
@@ -70,7 +70,7 @@ int recovery_10round_key(byte delta,byte differential_cipher_4_error[4][4],byte 
     printf("\nchain_sum:%lld\n",chain_sum);
     fprintf(fpWrite,"\nchain_sum:%lld\n",chain_sum);
     fclose(fpWrite);
-	int re_vok = verify_offline_key(guess_key_10round,key_10round,w,candidiate_key_count,first_success_num,first_fail_num,cipher_verify,
+	int re_vok = verify_offline_key(guess_key_10round,w,candidiate_key_count,first_success_num,first_fail_num,cipher_verify,
 	in,n,nt,base,reall_main_key,first_out_time_num,other_fail_num);
 
     if(re_vok == 1 && chain_sum >= timeout_Num){//这里是判断超过设定的攻击复杂度后，攻击是成功、失败还是超时了
@@ -104,10 +104,10 @@ int recovery_main_key(byte key_10round[16],byte main_key[16]){
 		for(int j=0;j<4;j++)
 			temp[j]=w[i+12+j];
 		if((i % 16)==0){
-			temp[0]=subbyte(w[i+13]) ^ rcon[i/16];
-			temp[1]=subbyte(w[i+14]);
-			temp[2]=subbyte(w[i+15]);
-			temp[3]=subbyte(w[i+12]);
+			temp[0]=subbyte_no_error(w[i+13]) ^ rcon[i/16];
+			temp[1]=subbyte_no_error(w[i+14]);
+			temp[2]=subbyte_no_error(w[i+15]);
+			temp[3]=subbyte_no_error(w[i+12]);
 		}
 		for(int j=0;j<4;j++)
 			w[i+j]=w[i+j+16] ^ temp[j];

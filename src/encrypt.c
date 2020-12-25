@@ -1,10 +1,21 @@
 #include "encrypt.h"
 #include "print.h"
+
+/*
+	subbyte_htable
+	subbyte_htable_inc
+	subbyte_htable_word
+	subbyte_htable_word_inc
+*/
+
+void (*masking_function)(byte *a,int n) = &subbyte_htable;
+void (*masking_function_no_error)(byte *a,int n) = &subbyte_htable_no_error;
+
 int random_plain(byte in[16]){
 	srand((unsigned)time(NULL) + rand());
 	//模拟每次攻击使用随机明文
 	for (int i = 0; i < 16; i++) {
-		in[i] = 0 + rand() % (256 - 0);
+		in[i] = rand() % 256;
 	}
 	// printf("\n随机明文是\n");
 	// FILE *fpWrite = fopen("experiment.txt", "a+");
@@ -15,10 +26,37 @@ int random_plain(byte in[16]){
 	return 0;
 }
 
+void is_print_and_encrypt(byte in[16],byte out[16],byte key[16],byte outex[16],int n,int nt,int base,int current_cipher_number,byte *out_error,byte *out_no_error){
+	FILE *fpWrite;
+	if(Is_print){
+		fpWrite= fopen("encrypt_state.txt", "a+");
+		fprintf(fpWrite,"第%d次加密状态矩阵:--share----------\n",current_cipher_number);
+		fclose(fpWrite);
+		run_aes_share_print(in,out,key,outex,n,masking_function,nt,base);
+		for(int i=0;i<16;i++){
+			out_error[i] = out[i];
+		}
+		run_aes_share_no_error_print(in,out,key,outex,n,masking_function_no_error,nt,base);
+		for(int i=0;i<16;i++){
+			out_no_error[i] = out[i];
+		}
+	}
+	else if(!Is_print){
+		run_aes_share(in,out,key,outex,n,masking_function,nt,base); 
+		for(int i=0;i<16;i++){
+			out_error[i] = out[i];
+		}
+		run_aes_share_no_error(in,out,key,outex,n,masking_function_no_error,nt,base); 
+		for(int i=0;i<16;i++){
+			out_no_error[i] = out[i];
+		}
+	}
+}
+
 int encrypt_find_different(byte in[16],byte out[16],byte key[16],byte outex[16],int n,int nt,int base,byte* delta,
 	byte differential_cipher_4_error[4][4],struct Different_Cipher dc[4],int relationship_delta_difference_cipher[4][4],
 	int diff_delta_count[4],int* appear_4_but_not_match,int* no_chain,int* more_chain,int* one_chain,byte cipher_verify[16],
-	byte plain_verify[16]){//第九轮出错导致密文四个字节不同的差分数组
+	byte plain_verify[16],int *cipher_num_not_enough){//第九轮出错导致密文四个字节不同的差分数组
 
 	bool collect_one_error = false;//是否收集到一个错误的情况，即收集到第十轮出错的情况,记得改成false
 	bool collect_cipher_done = false;//如果找到16个字节都出错，并且也找到第十轮出错（只有一个字节出错）的情况，如果找到了就停止加密
@@ -29,32 +67,11 @@ int encrypt_find_different(byte in[16],byte out[16],byte key[16],byte outex[16],
 	int current_cipher_number = 0;
 	for(;current_cipher_number<Cipher_num;current_cipher_number++){
 		random_plain(in);
+
 		FILE *fpWrite ;
 		byte out_no_error[16];
 		byte out_error[16];
-		if(Is_print){
-			fpWrite= fopen("encrypt_state.txt", "a+");
-			fprintf(fpWrite,"第%d次加密状态矩阵:--share----------\n",current_cipher_number);
-			fclose(fpWrite);
-			run_aes_share_print(in,out,key,outex,n,&subbyte_htable,nt,base);
-			for(int i=0;i<16;i++){
-				out_error[i] = out[i];
-			}
-			run_aes_share_print(in,out,key,outex,n,&subbyte_htable_no_error,nt,base);
-			for(int i=0;i<16;i++){
-				out_no_error[i] = out[i];
-			}
-		}
-		else if(!Is_print){
-			run_aes_share(in,out,key,outex,n,&subbyte_htable,nt,base); 
-			for(int i=0;i<16;i++){
-				out_error[i] = out[i];
-			}
-			run_aes_share(in,out,key,outex,n,&subbyte_htable_no_error,nt,base); 
-			for(int i=0;i<16;i++){
-				out_no_error[i] = out[i];
-			}
-		}
+		is_print_and_encrypt(in,out,key,outex,n,nt,base,current_cipher_number,out_error,out_no_error);
 		int different_local[4] = {0,0,0,0};
 		int different_count = 0;
 		for(int k=0;k<16;k++){
@@ -101,7 +118,6 @@ int encrypt_find_different(byte in[16],byte out[16],byte key[16],byte outex[16],
 		}
 		else if(different_count == 4 && (!error_local[different_local[0]] || !error_local[different_local[1]] || 
 			!error_local[different_local[2]] || !error_local[different_local[3]]) && !collect_four_done){//第九轮出错，导致密文四个字节不同
-
 			if(!((different_local[0]==0&&different_local[1]==7&&different_local[2]==10&&different_local[3]==13)||
 				(different_local[0]==1&&different_local[1]==4&&different_local[2]==11&&different_local[3]==14)||
 				(different_local[0]==2&&different_local[1]==5&&different_local[2]==8&&different_local[3]==15)||
@@ -163,6 +179,14 @@ int encrypt_find_different(byte in[16],byte out[16],byte key[16],byte outex[16],
 			break;
 		}
 	}
+	if(!collect_cipher_done){
+		FILE *fpWrite = fopen("experiment.txt", "a+");
+		printf("收集密文数量不够 %d\n",current_cipher_number);
+		fprintf(fpWrite,"收集密文数量不够 %d\n",current_cipher_number);
+		fclose(fpWrite);
+		(*cipher_num_not_enough)++;
+		return 0;
+	}
 	FILE *fpWrite = fopen("experiment.txt", "a+");
 	printf("四个字节的差分：\n");
 	fprintf(fpWrite,"四个字节的差分：\n");
@@ -208,33 +232,15 @@ int encrypt_find_different(byte in[16],byte out[16],byte key[16],byte outex[16],
 					diff_delta_count[h] = 0;
 				}
 				for(;current_cipher_number<Cipher_num;current_cipher_number++){
+					fpWrite = fopen("experiment.txt", "a+");
+					printf("继续加密：\n");
+					fprintf(fpWrite,"继续加密：\n");
+					fclose(fpWrite);
 					random_plain(in);
 					FILE *fpWrite ;
 					byte out_no_error[16];
 					byte out_error[16];
-					if(Is_print){
-						fpWrite= fopen("encrypt_state.txt", "a+");
-						fprintf(fpWrite,"第%d次加密状态矩阵:--share----------\n",current_cipher_number);
-						fclose(fpWrite);
-						run_aes_share_print(in,out,key,outex,n,&subbyte_htable,nt,base);
-						for(int i=0;i<16;i++){
-							out_error[i] = out[i];
-						}
-						run_aes_share_print(in,out,key,outex,n,&subbyte_htable_no_error,nt,base);
-						for(int i=0;i<16;i++){
-							out_no_error[i] = out[i];
-						}
-					}
-					else if(!Is_print){
-						run_aes_share(in,out,key,outex,n,&subbyte_htable,nt,base); 
-						for(int i=0;i<16;i++){
-							out_error[i] = out[i];
-						}
-						run_aes_share(in,out,key,outex,n,&subbyte_htable_no_error,nt,base); 
-						for(int i=0;i<16;i++){
-							out_no_error[i] = out[i];
-						}
-					}
+					is_print_and_encrypt(in,out,key,outex,n,nt,base,current_cipher_number,out_error,out_no_error);
 					int different_local[4] = {0,0,0,0};
 					int different_count = 0;
 					for(int k=0;k<16;k++){

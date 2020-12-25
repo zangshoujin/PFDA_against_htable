@@ -21,16 +21,21 @@ byte bit(byte x,int i);
 byte affine(byte x);
 
 byte subbyte(byte x);
+byte subbyte_no_error(byte x);
 void printstate(byte state[16]);
 
 void shiftrows(byte state[16]);
 void mixcolumns(byte *state);
 void subbytestate(byte *state);
+void subbytestate_no_error(byte *state);
 void addroundkey(byte *state,byte *w,int round);
 void setrcon(byte rcon[10]);
 void keyexpansion(byte *key,byte *w);
+void keyexpansion_no_error(byte *key,byte *w);
+
 
 void aes(byte in[16],byte out[16],byte key[16]);
+void aes_no_error(byte in[16],byte out[16],byte w[176]);
 int run_aes(void (*algo)(byte *,byte *,byte *),byte *in,byte *out,byte *key,byte *outex,int nt,int base,byte w[176]);
 void testaes();
 
